@@ -1,0 +1,12 @@
+[
+  {
+    "modid": "depextraction",
+    "name": "Dependency Extraction",
+    "description": "Example mod for dependency extraction",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "authorList": [
+      "PaleoCrafter"
+    ]
+  }
+]
