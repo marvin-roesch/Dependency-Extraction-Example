@@ -42,29 +42,49 @@ processResources {
     }
 }
 
+// Define a new task for the contained JAR
+// If you want to, you can distribute this as a separate artifact to a Maven
 task modJar(type: Jar) {
+    // Copy all compiled files and resources from the source set to the JAR
+    // If you have additional source sets, add the same logic here
     from(sourceSets.main.output) {
+        // Don't include the coremod in the main mod
+        // If you have more coremod-related packages that aren't nested in the main one, add exclusions for them
         exclude 'io/paleocrafter/depextraction/core/**'
     }
     manifest {
         // Strictly speaking not required (right now)
+        // Allows Forge to extract the dependency to a local repository (Given that the corresponding PR is merged)
+        // If another mod ships the same dependency, it doesn't have to be extracted twice
         attributes 'Maven-Version': "${project.group}:${project.archivesBaseName}:${project.version}:mod"
     }
+    // Add a classifier to the JAR ('-mod' at the end of the file name)
+    // Distinguishes the mod JAR from the shipped one
     classifier 'mod'
 }
 
+// Reobfuscate the output of the mod JAR task with SRG names, otherwise the mod won't be able to reference MC classes
 reobf {
     modJar { mappingType = 'SEARGE' }
 }
 
+// Use the standard JAR task as container for the coremod and the contained dependency
+// When MinecraftForge#4081 gets merged, you can change this to be the main mod, shipping the coremod as extractable JAR
 jar {
+    // Only include the coremod package
+    // If you need additional files, add some more includes
     include 'io/paleocrafter/depextraction/core/**'
+    // Add the output of the mod JAR task to the main JAR for later extraction
     from(modJar.archivePath.absolutePath) {
-        include '*'
+        include '*' // Due to the way Gradle's copy tasks work, we need this line for the JAR to get added
     }
+    // Standard coremod manifest definitions
     manifest {
+        // Added benefit of separating mod and coremod: No need for FMLCorePluginContainsFMLMod
         attributes 'FMLCorePlugin': "io.paleocrafter.depextraction.core.DepExtractionCore"
+        // The crucial manifest attribute: Make Forge extract the contained JAR
         attributes 'ContainedDeps': modJar.archivePath.name
     }
+    // Only run the main jar task after the mod JAR was completely built
     dependsOn reobfModJar
 }
