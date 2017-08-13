@@ -1,8 +1,8 @@
 [
   {
-    "modid": "depextraction",
-    "name": "Dependency Extraction",
-    "description": "Example mod for dependency extraction",
+    "modid": "depextraction_libembedding",
+    "name": "Dependency Extraction - Library Embedding",
+    "description": "Example mod for dependency extraction (library embedding)",
     "version": "${version}",
     "mcversion": "${mcversion}",
     "authorList": [
