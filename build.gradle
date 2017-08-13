@@ -51,7 +51,7 @@ configurations {
 
 dependencies {
     // Add as many dependencies here as you like, using 'embed' whenever you want to 'shade' them
-    embed 'org.apache.commons:commons-math3:3.6.1'
+    embed 'com.flowpowered:flow-math:1.0.3'
 }
 
 // Custom task to generate the metadata files required for our dependencies
