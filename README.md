@@ -12,8 +12,8 @@ All examples occupy their own branch and don't need any special setup after clon
 
 There currently are two examples in this repository, one for coremods and another for arbitrary (Maven) dependencies:
 
- - [Coremod separation example](https://github.com/PaleoCrafter/Dependency-Extraction-Example/blob/coremod-separation/#coremod-separation)
- - [Library embedding example](https://github.com/PaleoCrafter/Dependency-Extraction-Example/blob/library-embedding/#library-embedding)
+ - [Coremod separation example](https://github.com/PaleoCrafter/Dependency-Extraction-Example/tree/coremod-separation/#coremod-separation)
+ - [Library embedding example](https://github.com/PaleoCrafter/Dependency-Extraction-Example/tree/library-embedding/#library-embedding)
  
 ### Coremod separation
 
