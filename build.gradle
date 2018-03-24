@@ -52,6 +52,7 @@ configurations {
 dependencies {
     // Add as many dependencies here as you like, using 'embed' whenever you want to 'shade' them
     embed 'com.flowpowered:flow-math:1.0.3'
+    embed 'de.oceanlabs.mcp:mcinjector:3.7-SNAPSHOT'
 }
 
 // Custom task to generate the metadata files required for our dependencies
@@ -70,15 +71,28 @@ task generateMetaFiles {
             if (it.classifier != null) {
                 artifactRef += ":${it.classifier}"
             }
+            def version = it.moduleVersion.id.version
+            def output = 'Maven-Artifact: ' + artifactRef
+            output += '\nMD5: ' + java.security.MessageDigest.getInstance('MD5').digest(it.file.bytes).encodeHex().toString()
+            if (it.moduleVersion.id.version.endsWith('-SNAPSHOT')) {
+                //Snapshots are special, there can be many versions of this file and we're suposed to pick the latest one.
+                //However, gradle hides any form of metadata related to what specific version we're using.
+                //So we guess. By grabbing the latest timestamp from all files in the zip.
+                //This CAN be cheesed, but honestly I dont care...
+                output += '\nTimestamp: ' + Collections.list(new java.util.zip.ZipFile(it.file).entries()).stream().mapToLong{ze -> ze.time}.reduce{a, b -> a > b ? a : b}.orElse(0)
+            }
+            //println artifactRef
+            //println output
+            
             // Write the artifact information to the meta file, to be used by the
-            metaFile.text = "Maven-Artifact: $artifactRef"
+            metaFile.text = output
         }
     }
 }
 
 // Use the standard JAR task as container for the main jar and the contained dependencies (from the embed configuration)
 jar {
-    into('/') {
+    into('/META-INF/dependencies') {
         // Add all of the dependency JARs to the main JAR for later extraction
         from configurations.embed
         // Also include all dependency meta files
